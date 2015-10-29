@@ -1,0 +1,29 @@
+#the_calculator {
+    position: relative;
+    width: 65vw;
+    height: 50vh;
+}
+.operator-side {
+    position: absolute;
+    left: 90%;
+    top: 19%;
+}
+.button-container {
+    width: 100%;
+    position: absolute;
+    top: 50%;
+    left: 20%;
+}
+.button-container button{
+    width: 30%;
+}
+.display {
+    text-align: right;
+    display: inline-block;
+    width: 15vw;
+    height: 6vh;
+    position: absolute;
+    top: 13vh;
+    left: 22%;
+    background-color: #cccccc;
+}
