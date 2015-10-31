@@ -5,25 +5,33 @@
 }
 .operator-side {
     position: absolute;
-    left: 90%;
-    top: 19%;
+    left: 83%;
+    top: 24%;
 }
 .button-container {
+    border: solid black 2px;
     width: 100%;
     position: absolute;
     top: 50%;
-    left: 20%;
+    left: 22%;
+    padding: 1em;
+    background-color: #515151;
+}
+.numbers {
+    position: relative;
 }
 .button-container button{
-    width: 30%;
+    width: 25%;
+    margin: 2px;
 }
 .display {
+    border: solid 2px black;
     text-align: right;
     display: inline-block;
     width: 15vw;
     height: 6vh;
     position: absolute;
     top: 13vh;
-    left: 22%;
+    left: 23%;
     background-color: #cccccc;
 }

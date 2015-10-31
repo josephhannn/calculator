@@ -1,32 +1,49 @@
-var my_calculator = new calculator(callback);
-function callback(type,value,item){
-    /*switch(type){
-        case "itemAdded":
-            break;
-        case "calculated":
-            break;
-        case "error":
-            break;
-    }*/
-    switch(value){
-        case undefined:
-            $(".display h4").text("");
-            break;
-        default:
-            $(".display h4").text(displayarea);
-    }
-}
+var v = null;
 $("document").ready(function(){
 $("button").on('click', function(){
     var val = $(this).text();
     console.log(val);
-    switch(val){
-        case "AC":
-            my_calculator.allClear();
-            break;
-        default:
-            my_calculator.addItem(val);
-            break;
-    }
-});
-});
+        if (isNaN(parseFloat(val))){
+            switch(val){
+                case "+":
+                    v = {
+                        type: "operator",
+                        value: val
+                    };
+                    break;
+                case "-":
+                    v = {
+                        type: "operator",
+                        value: val
+                    };
+                    break;
+                case "/":
+                    v = {
+                        type: "operator",
+                        value: val
+                    };
+                    break;
+                case "x":
+                    v = {
+                        type: "operator",
+                        value: val
+                    };
+                    break;
+                case "=":
+                    v = {
+                        type: "equalSign",
+                        value: val
+                    };
+                    break;
+            }
+        }
+        else {
+            v = {
+                type: "number",
+                value: val
+            };
+        }
+})
+})
+
+
