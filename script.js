@@ -63,7 +63,12 @@ $("document").ready(function() {
             $(".display h4").text(lastitem.val);
         }
         if (calcarr.length > 0 && v.type == "decimal" && lastitem.type == "number"){
-            if (lastitem.decimal == false) {
+            if (firstitem.calcu == true) {
+                calcarr = [];
+                calcarr[0] = new number("0.");
+                $(".display h4").text(calcarr[0].val);
+            }
+            else if (lastitem.decimal == false) {
                 lastitem.val = lastitem.val + v.val;
                 $(".display h4").text(lastitem.val);
                 lastitem.decimal = true;
