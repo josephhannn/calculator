@@ -35,3 +35,6 @@
     left: 23%;
     background-color: #cccccc;
 }
+.historycontainer {
+    position: relative;
+}

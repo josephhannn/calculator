@@ -4,16 +4,25 @@ $('document').ready(function(){
     $('#equals').on('click',function(){
         calc.equate();
         console.log(calc.arr);
+        calc.display();
     });
     $('#decimal').on('click',function(){
         calc.decimal($(this).text());
         console.log(calc.arr);
     });
     $('.numbers .btn').on('click',function(){
-        calc.addinputs($(this).text())
+        calc.addinputs($(this).text());
+        calc.display();
     });
     $('.operator-side .btn').on('click',function(){
-        calc.addinputs($(this).text())
+        calc.addinputs($(this).text());
+        calc.display();
+    });
+    $('.AC').on('click',function(){
+        calc.allclear();
+    });
+    $('.showhistory').on('click',function(){
+        calc.historydisplay();
     })
 });
 
@@ -21,8 +30,10 @@ $('document').ready(function(){
 var calculator = function(val) {
     var self = this;
     var calculatorarray = [];
-    var displayvalue = 0;
+    var calchistory = [];
+    var displayval = [];
     self.arr = calculatorarray;
+    self.history = calchistory;
 
     Object.defineProperty(self, 'doesOperatorExist', {
         get: function () {
@@ -35,17 +46,37 @@ var calculator = function(val) {
             return check;
         }
     });
+    self.display = function(){
+        for(var i=0;i<self.arr.length;i++){
+            var display = self.arr[i].val
+        }
+        $('.display h4').text(display);
+    };
+    self.allclear = function(){
+        self.arr = [];
+        $('.display h4').text('0');
+    };
     self.decimal = function(val){
         var firstitem = self.arr[0];
         var lastitem = self.arr[self.arr.length-1];
         if(self.arr.length === 0){
             var newdecimal = new number('0');
             newdecimal.val = '0.';
+            newdecimal.decimal = true;
             self.arr=[newdecimal];
+            return;
         }
         if(lastitem.isNumber && !lastitem.decimal){
             lastitem.val = lastitem.val + "" + val;
             lastitem.decimal = true;
+        }
+    };
+    self.historydisplay = function(){
+        $('.history li').remove();
+        for(var i = 0 ; i<self.history.length;i++){
+            var entry = $('<li>').text(
+                self.history[i].num1.val+''+self.history[i].operator.val+''+self.history[i].num2.val+'='+self.history[i].val);
+            $('.history').append(entry)
         }
     };
     self.addinputs = function (val) {
@@ -117,6 +148,19 @@ var calculator = function(val) {
         if(self.arr.length == 3){
             var calcu1 = new calculation(self.arr[0],self.arr[1],self.arr[2]);
             self.arr = [calcu1];
+            self.history.push(calcu1);
+        }
+        if (self.arr.length > 3 && lastitem.isOperator){
+            while(self.arr.length > 2) {
+                for (var i = 0; i < self.arr.length; i++) {
+                    if (self.arr[i].isOperator && self.arr[i+1].isNumber) {
+                        var calcu2 = new calculation(self.arr[i - 1], self.arr[i], self.arr[i + 1]);
+                        self.arr[i - 1] = calcu2;
+                        self.arr.splice(i, 2);
+                        self.history.push(calcu2);
+                    }
+                }
+            }
         }
         if (self.arr.length > 3 && lastitem.isNumber){
             while(self.arr.length > 1) {
@@ -125,6 +169,7 @@ var calculator = function(val) {
                         var calcu2 = new calculation(self.arr[i - 1], self.arr[i], self.arr[i + 1]);
                         self.arr[i - 1] = calcu2;
                         self.arr.splice(i, 2);
+                        self.history.push(calcu2);
                     }
                 }
             }
@@ -169,19 +214,19 @@ var calculation = function (num1, op, num2) {
 
 var operator = function(value){
     var self = this;
-    var order;
+    var priority;
     switch(value){
         case '+':
-            order = 0;
+            priority = false;
             break;
         case '-':
-            order = 0;
+            priority = false;
             break;
         case 'x':
-            order = 1;
+            priority = true;
             break;
         case '/':
-            order = 1;
+            priority = true;
             break;
     }
     calculatoritem.call(self, value);
