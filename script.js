@@ -1,41 +1,137 @@
-var calculator = function(){
+var calc;
+$('document').ready(function(){
+    calc = new calculator();
+    $('#equals').on('click',function(){
+        calc.equate();
+        console.log(calc.arr);
+    });
+    $('#decimal').on('click',function(){
+        calc.decimal($(this).text());
+        console.log(calc.arr);
+    });
+    $('.numbers .btn').on('click',function(){
+        calc.addinputs($(this).text())
+    });
+    $('.operator-side .btn').on('click',function(){
+        calc.addinputs($(this).text())
+    })
+});
+
+
+var calculator = function(val) {
     var self = this;
     var calculatorarray = [];
     var displayvalue = 0;
-    var v = null;
+    self.arr = calculatorarray;
 
-    self.addinputs = function(val){
-        if(isNaN(parseFloat(val))){
-            v = self.createitem(val);
+    Object.defineProperty(self, 'doesOperatorExist', {
+        get: function () {
+            var check = false;
+            for (var i = 0; i < calculatorarray.length; i++) {
+                if (calculatorarray[i].isOperator) {
+                    check = true;
+                }
+            }
+            return check;
+        }
+    });
+    self.decimal = function(val){
+        var firstitem = self.arr[0];
+        var lastitem = self.arr[self.arr.length-1];
+        if(self.arr.length === 0){
+            var newdecimal = new number('0');
+            newdecimal.val = '0.';
+            self.arr=[newdecimal];
+        }
+        if(lastitem.isNumber && !lastitem.decimal){
+            lastitem.val = lastitem.val + "" + val;
+            lastitem.decimal = true;
+        }
+    };
+    self.addinputs = function (val) {
+        var v = null;
+        if (val == '='){
+            console.log('equated');
+            return;
+        }
+        if(val == '.'){
+            console.log('decimal clicked');
+            return;
+        }
+        else if (isNaN(parseFloat(val))) {
+            v = new operator(val);
         }
         else {
             v = new number(val);
         }
-    };
-    self.createitem = function(){
-        var r = new calculatoritem();
-        switch (operator) {
-            case '+':
-                r = new plus();
-                break;
-            case '-':
-                r = new subtract();
-                break;
-            case '/':
-                r = new divide();
-                break;
-            case 'x':
-                r = new multiple();
-                break;
-            case '=':
-                r = new equalSign();
-                break;
+        var firstentry = self.arr[0];
+        var lastentry = self.arr[self.arr.length - 1];
+
+        if (self.arr.length === 0 && v.isNumber) {
+            self.arr.push(v);
+            return;
         }
-
-        return r;
-    }
-
+        if(self.arr.length === 0 && v.isOperator){
+            console.log('illegal operator');
+            return;
+        }
+        if (lastentry.isNumber) {
+            if(v.isNumber){
+                lastentry.val = lastentry.val + '' + v.val;
+            }
+            if(v.isOperator){
+                self.arr.push(v);
+            }
+        }
+        if (lastentry.isOperator) {
+            if(v.isNumber){
+                self.arr.push(v);
+            }
+            if(v.isOperator){
+                lastentry.val = v.val;
+            }
+        }
+        if(lastentry.isCalculation){
+            if(v.isNumber){
+                self.arr = [v];
+            }
+            if(v.isOperator){
+                self.arr.push(v);
+            }
+        }
+    };
+    self.equate = function(){
+        var firstitem = self.arr[0];
+        var lastitem = self.arr[self.arr.length-1];
+        if (self.arr.length == 1){
+            if(firstitem.isCalculation){
+                self.arr.push(firstitem.operator, firstitem.num2)
+            }
+            else if(firstitem.isNumber){
+                return self.arr[0].val;
+            }
+        }
+        if(self.arr.length == 2 && lastitem.isOperator){
+            self.arr.push(new number(firstitem.val));
+        }
+        if(self.arr.length == 3){
+            var calcu1 = new calculation(self.arr[0],self.arr[1],self.arr[2]);
+            self.arr = [calcu1];
+        }
+        if (self.arr.length > 3 && lastitem.isNumber){
+            while(self.arr.length > 1) {
+                for (var i = 0; i < self.arr.length; i++) {
+                    if (self.arr[i].isOperator) {
+                        var calcu2 = new calculation(self.arr[i - 1], self.arr[i], self.arr[i + 1]);
+                        self.arr[i - 1] = calcu2;
+                        self.arr.splice(i, 2);
+                    }
+                }
+            }
+        }
+    };
 };
+
 var calculatoritem = function(value){
     var self = this;
     self.val = value;
@@ -49,59 +145,63 @@ var calculatoritem = function(value){
             return self instanceof operator;
         }
     });
-    Object.defineProperty(self , 'isequalSign',{
+    Object.defineProperty(self, 'isCalculation',{
         get: function() {
-            return self instanceof equalSign;
+            return self instanceof calculation
         }
-    });
-    Object.defineProperty(self , 'isCalculation',{
-        get: function() {
-            return self instanceof calculation;
-        }
-    });
+    })
 };
 var number = function(value){
+    var hasdecimal = false;
     var self = this;
-    calculatoritem.call(self, parseFloat(val));
-};
-var operator = function(value){
-    var self = this;
-    calculatoritem.call(self, value);
-    operator.calculate = function(num1,num2){
-       var n1 = num1;
-        var n2 = num2;
-        var r1;
-        var r2;
-        if(typeof num1 == 'number'){
-            n1 = new number(num1);
-        }
-        if(typeof num2 == 'number'){
-            n2 = new number(num2)
-        }
-        r1 = parseFloat(num1.val);
-        r2 = parseFloat(num2.val);
-        return [r1,r2]
-    }
-};
-var plus = function(){
-    var self = this;
-    operator.call(self, '+');
-    self.calculate = function(num1,num2){
-        var answer = operator.calculate.call(this,num1,num2);
-        return answer[1] + answer[2]
-    }
+    calculatoritem.call(self, parseFloat(value));
 };
 var calculation = function (num1, op, num2) {
     var self = this;
     self.num1 = num1;
     self.num2 = num2;
     self.operator = op;
-    calculatoritem.call(self, function () {
-        var calculatedValue = op.calculate(num1, num2);
-        return calculatedValue;
-    });
+    var result = function(){
+        return op.calculate(parseFloat(num1.val),parseFloat(num2.val))
+    };
+    calculatoritem.call(this,result());
+};
 
-    self.calculate = function () {
-        return op.calculate(num1, self.val);
+var operator = function(value){
+    var self = this;
+    var order;
+    switch(value){
+        case '+':
+            order = 0;
+            break;
+        case '-':
+            order = 0;
+            break;
+        case 'x':
+            order = 1;
+            break;
+        case '/':
+            order = 1;
+            break;
+    }
+    calculatoritem.call(self, value);
+    self.calculate = function(num1,num2){
+        var result;
+        switch(value){
+            case '+':
+                result = num1 + num2;
+                break;
+            case '-':
+                result = num1 - num2;
+                break;
+            case 'x':
+                result = num1 * num2;
+                break;
+            case '/':
+                result = num1 / num2;
+                break;
+        }
+        return result;
     }
 };
+
