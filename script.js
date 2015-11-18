@@ -11,11 +11,11 @@ $('document').ready(function(){
         console.log(calc.arr);
     });
     $('.numbers .btn').on('click',function(){
-        calc.addinputs($(this).text());
+        calc.add_inputs($(this).text());
         calc.display();
     });
     $('.operator-side .btn').on('click',function(){
-        calc.addinputs($(this).text());
+        calc.add_inputs($(this).text());
         calc.display();
     });
     $('.AC').on('click',function(){
@@ -79,7 +79,7 @@ var calculator = function(val) {
             $('.history').append(entry)
         }
     };
-    self.addinputs = function (val) {
+    self.add_inputs = function (val) {
         var v = null;
         if (val == '='){
             console.log('equated');
@@ -107,6 +107,10 @@ var calculator = function(val) {
             return;
         }
         if (lastentry.isNumber) {
+            if(lastentry.val === 0){
+                self.arr[self.arr.length-1] = v;
+                return;
+            }
             if(v.isNumber){
                 lastentry.val = lastentry.val + '' + v.val;
             }
@@ -119,7 +123,7 @@ var calculator = function(val) {
                 self.arr.push(v);
             }
             if(v.isOperator){
-                lastentry.val = v.val;
+                self.arr[self.arr.length - 1] = v;
             }
         }
         if(lastentry.isCalculation){
@@ -134,6 +138,9 @@ var calculator = function(val) {
     self.equate = function(){
         var firstitem = self.arr[0];
         var lastitem = self.arr[self.arr.length-1];
+        if (self.arr.length === 0){
+            $('.display h4').text('0');
+        }
         if (self.arr.length == 1){
             if(firstitem.isCalculation){
                 self.arr.push(firstitem.operator, firstitem.num2)
@@ -147,6 +154,9 @@ var calculator = function(val) {
         }
         if(self.arr.length == 3){
             var calcu1 = new calculation(self.arr[0],self.arr[1],self.arr[2]);
+            if (calcu1.val === Infinity){
+                calcu1.val = 'Error'
+            }
             self.arr = [calcu1];
             self.history.push(calcu1);
         }
@@ -161,17 +171,19 @@ var calculator = function(val) {
                     }
                 }
             }
+            self.equate();
         }
         if (self.arr.length > 3 && lastitem.isNumber){
             while(self.arr.length > 1) {
-                for (var i = 0; i < self.arr.length; i++) {
-                    if (self.arr[i].isOperator) {
-                        var calcu2 = new calculation(self.arr[i - 1], self.arr[i], self.arr[i + 1]);
-                        self.arr[i - 1] = calcu2;
-                        self.arr.splice(i, 2);
+                for (var o = 0; o < 3; o++) {
+                    if (self.arr[o].isOperator) {
+                        var calcu2 = new calculation(self.arr[o - 1], self.arr[o], self.arr[o + 1]);
+                        self.arr[o - 1] = calcu2;
+                        self.arr.splice(o, 2);
                         self.history.push(calcu2);
                     }
                 }
+                self.equate();
             }
         }
     };
