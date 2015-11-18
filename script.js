@@ -56,17 +56,17 @@ var calculator = function(val) {
         $('.display h4').text('0');
     };
     self.decimal = function(val){
-        var lastitem = self.arr[self.arr.length-1];
+        var last_item = self.arr[self.arr.length-1];
         if(self.arr.length === 0){
-            var newdecimal = new number('0');
-            newdecimal.val = '0.';
-            newdecimal.decimal = true;
-            self.arr=[newdecimal];
+            var new_decimal = new number('0');
+            new_decimal.val = '0.';
+            new_decimal.decimal = true;
+            self.arr=[new_decimal];
             return;
         }
-        if(lastitem.isNumber && !lastitem.decimal){
-            lastitem.val = lastitem.val + "" + val;
-            lastitem.decimal = true;
+        if(last_item.isNumber && !last_item.decimal){
+            last_item.val = last_item.val + "" + val;
+            last_item.decimal = true;
         }
     };
     self.history_display = function(){
@@ -93,7 +93,7 @@ var calculator = function(val) {
         else {
             v = new number(val);
         }
-        var lastentry = self.arr[self.arr.length - 1];
+        var last_entry = self.arr[self.arr.length - 1];
 
         if (self.arr.length === 0 && v.isNumber) {
             self.arr.push(v);
@@ -103,19 +103,19 @@ var calculator = function(val) {
             console.log('illegal operator');
             return;
         }
-        if (lastentry.isNumber) {
-            if(lastentry.val === 0){
+        if (last_entry.isNumber) {
+            if(last_entry.val === 0){
                 self.arr[self.arr.length-1] = v;
                 return;
             }
             if(v.isNumber){
-                lastentry.val = lastentry.val + '' + v.val;
+                last_entry.val = last_entry.val + '' + v.val;
             }
             if(v.isOperator){
                 self.arr.push(v);
             }
         }
-        if (lastentry.isOperator) {
+        if (last_entry.isOperator) {
             if(v.isNumber){
                 self.arr.push(v);
             }
@@ -123,7 +123,7 @@ var calculator = function(val) {
                 self.arr[self.arr.length - 1] = v;
             }
         }
-        if(lastentry.isCalculation){
+        if(last_entry.isCalculation){
             if(v.isNumber){
                 self.arr = [v];
             }
@@ -133,56 +133,58 @@ var calculator = function(val) {
         }
     };
     self.equate = function(){
-        var firstitem = self.arr[0];
-        var lastitem = self.arr[self.arr.length-1];
+        var first_item = self.arr[0];
+        var last_item = self.arr[self.arr.length-1];
         if (self.arr.length === 0){
             $('.display h4').text('0');
         }
         if (self.arr.length == 1){
-            if(firstitem.isCalculation){
-                self.arr.push(firstitem.operator, firstitem.num2)
+            if(first_item.isCalculation){
+                self.arr.push(first_item.operator, first_item.num2)
             }
-            else if(firstitem.isNumber){
+            else if(first_item.isNumber){
                 return self.arr[0].val;
             }
         }
-        if(self.arr.length == 2 && lastitem.isOperator){
-            self.arr.push(new number(firstitem.val));
+        if(self.arr.length == 2 && last_item.isOperator){
+            self.arr.push(new number(first_item.val));
         }
         if(self.arr.length == 3){
-            var calcu1 = new calculation(self.arr[0],self.arr[1],self.arr[2]);
-            if (calcu1.val === Infinity){
-                calcu1.val = 'Error'
+            var calculation1 = new calculation(self.arr[0],self.arr[1],self.arr[2]);
+            if (calculation1.val === Infinity){
+                calculation1.val = 'Error'
             }
-            self.arr = [calcu1];
-            self.history.push(calcu1);
+            self.arr = [calculation1];
+            self.history.push(calculation1);
         }
-        if (self.arr.length > 3 && lastitem.isOperator){
+        if (self.arr.length > 3 && last_item.isOperator){
             while(self.arr.length > 2) {
                 for (var i = 0; i < self.arr.length; i++) {
                     if (self.arr[i].isOperator && self.arr[i+1].isNumber) {
-                        var calcu2 = new calculation(self.arr[i - 1], self.arr[i], self.arr[i + 1]);
-                        self.arr[i - 1] = calcu2;
+                        var calculation2 = new calculation(self.arr[i - 1], self.arr[i], self.arr[i + 1]);
+                        self.arr[i - 1] = calculation2;
                         self.arr.splice(i, 2);
-                        self.history.push(calcu2);
+                        self.history.push(calculation2);
                     }
                 }
             }
             self.equate();
         }
-        if (self.arr.length > 3 && lastitem.isNumber){
+        if (self.arr.length > 3 && last_item.isNumber){
             var oop_check;
             while(self.arr.length > 1) {
                 for(var o = 0 ; o<self.arr.length;o++){
+                    //scan array check for priority operators AKA x or /
                     if(self.arr[o].isOperator && self.arr[o].priority){
                         oop_check = true;
+                        //when true calculate that operation first
                         if(oop_check) {
                             for (var k = 0; k < self.arr.length; k++) {
                                 if (self.arr[k].isOperator && self.arr[k].priority) {
-                                    var calcu3 = new calculation(self.arr[k - 1], self.arr[k], self.arr[k + 1]);
-                                    self.arr[k - 1] = calcu3;
+                                    var calculation3 = new calculation(self.arr[k - 1], self.arr[k], self.arr[k + 1]);
+                                    self.arr[k - 1] = calculation3;
                                     self.arr.splice(k, 2);
-                                    self.history.push(calcu3);
+                                    self.history.push(calculation3);
                                 }
                                 else {
                                     continue;
@@ -191,12 +193,13 @@ var calculator = function(val) {
                         }
                     }
                 }
+                //when there are no priority operators in array continue as normal
                 for (var l = 0; l < self.arr.length; l++) {
                     if (self.arr[l].isOperator) {
-                        var calcu4 = new calculation(self.arr[l - 1], self.arr[l], self.arr[l + 1]);
-                        self.arr[l - 1] = calcu4;
+                        var calculation4 = new calculation(self.arr[l - 1], self.arr[l], self.arr[l + 1]);
+                        self.arr[l - 1] = calculation4;
                         self.arr.splice(l, 2);
-                        self.history.push(calcu4);
+                        self.history.push(calculation4);
                     }
                 }
             }
