@@ -150,21 +150,21 @@ var calculator = function(val) {
             self.arr.push(new number(first_item.val));
         }
         if(self.arr.length == 3){
-            var calculation1 = new calculation(self.arr[0],self.arr[1],self.arr[2]);
-            if (calculation1.val === Infinity){
-                calculation1.val = 'Error'
+            var new_calculation = new calculation(self.arr[0],self.arr[1],self.arr[2]);
+            if (new_calculation.val === Infinity){
+                new_calculation.val = 'Error'
             }
-            self.arr = [calculation1];
-            self.history.push(calculation1);
+            self.arr = [new_calculation];
+            self.history.push(new_calculation);
         }
         if (self.arr.length > 3 && last_item.isOperator){
             while(self.arr.length > 2) {
                 for (var i = 0; i < self.arr.length; i++) {
                     if (self.arr[i].isOperator && self.arr[i+1].isNumber) {
-                        var calculation2 = new calculation(self.arr[i - 1], self.arr[i], self.arr[i + 1]);
-                        self.arr[i - 1] = calculation2;
+                        new_calculation = new calculation(self.arr[i - 1], self.arr[i], self.arr[i + 1]);
+                        self.arr[i - 1] = new_calculation;
                         self.arr.splice(i, 2);
-                        self.history.push(calculation2);
+                        self.history.push(new_calculation);
                     }
                 }
             }
@@ -176,30 +176,27 @@ var calculator = function(val) {
                 for(var o = 0 ; o<self.arr.length;o++){
                     //scan array check for priority operators AKA x or /
                     if(self.arr[o].isOperator && self.arr[o].priority){
-                        oop_check = true;
                         //when true calculate that operation first
-                        if(oop_check) {
-                            for (var k = 0; k < self.arr.length; k++) {
-                                if (self.arr[k].isOperator && self.arr[k].priority) {
-                                    var calculation3 = new calculation(self.arr[k - 1], self.arr[k], self.arr[k + 1]);
-                                    self.arr[k - 1] = calculation3;
+                        for (var k = 0; k < self.arr.length; k++) {
+                            if (self.arr[k].isOperator && self.arr[k].priority) {
+                                    new_calculation = new calculation(self.arr[k - 1], self.arr[k], self.arr[k + 1]);
+                                    self.arr[k - 1] = new_calculation;
                                     self.arr.splice(k, 2);
-                                    self.history.push(calculation3);
-                                }
-                                else {
-                                    continue;
-                                }
+                                    self.history.push(new_calculation);
                             }
-                        }
+                            else {
+                                    continue;
+                            }
+                            }
                     }
                 }
                 //when there are no priority operators in array continue as normal
                 for (var l = 0; l < self.arr.length; l++) {
                     if (self.arr[l].isOperator) {
-                        var calculation4 = new calculation(self.arr[l - 1], self.arr[l], self.arr[l + 1]);
-                        self.arr[l - 1] = calculation4;
+                        new_calculation = new calculation(self.arr[l - 1], self.arr[l], self.arr[l + 1]);
+                        self.arr[l - 1] = new_calculation;
                         self.arr.splice(l, 2);
-                        self.history.push(calculation4);
+                        self.history.push(new_calculation);
                     }
                 }
             }
