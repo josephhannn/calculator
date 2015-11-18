@@ -175,13 +175,14 @@ var calculator = function(val) {
         }
         if (self.arr.length > 3 && lastitem.isNumber){
             while(self.arr.length > 1) {
-                for (var o = 0; o < 3; o++) {
-                    if (self.arr[o].isOperator) {
+                for (var o = 0; o < self.arr.length; o++) {
+                    if (self.arr[o].isOperator && self.arr[o].priority) {
                         var calcu2 = new calculation(self.arr[o - 1], self.arr[o], self.arr[o + 1]);
                         self.arr[o - 1] = calcu2;
                         self.arr.splice(o, 2);
                         self.history.push(calcu2);
                     }
+                    else{continue;}
                 }
                 self.equate();
             }
@@ -241,6 +242,7 @@ var operator = function(value){
             priority = true;
             break;
     }
+    self.priority = priority;
     calculatoritem.call(self, value);
     self.calculate = function(num1,num2){
         var result;
