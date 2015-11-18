@@ -22,24 +22,23 @@ $('document').ready(function(){
         calc.allclear();
     });
     $('.showhistory').on('click',function(){
-        calc.historydisplay();
+        calc.history_display();
     })
 });
 
 
 var calculator = function(val) {
     var self = this;
-    var calculatorarray = [];
-    var calchistory = [];
-    var displayval = [];
-    self.arr = calculatorarray;
-    self.history = calchistory;
+    var calculator_array = [];
+    var calc_history = [];
+    self.arr = calculator_array;
+    self.history = calc_history;
 
     Object.defineProperty(self, 'doesOperatorExist', {
         get: function () {
             var check = false;
-            for (var i = 0; i < calculatorarray.length; i++) {
-                if (calculatorarray[i].isOperator) {
+            for (var i = 0; i < self.arr.length; i++) {
+                if (self.arr[i].isOperator) {
                     check = true;
                 }
             }
@@ -57,7 +56,6 @@ var calculator = function(val) {
         $('.display h4').text('0');
     };
     self.decimal = function(val){
-        var firstitem = self.arr[0];
         var lastitem = self.arr[self.arr.length-1];
         if(self.arr.length === 0){
             var newdecimal = new number('0');
@@ -71,7 +69,7 @@ var calculator = function(val) {
             lastitem.decimal = true;
         }
     };
-    self.historydisplay = function(){
+    self.history_display = function(){
         $('.history li').remove();
         for(var i = 0 ; i<self.history.length;i++){
             var entry = $('<li>').text(
@@ -95,7 +93,6 @@ var calculator = function(val) {
         else {
             v = new number(val);
         }
-        var firstentry = self.arr[0];
         var lastentry = self.arr[self.arr.length - 1];
 
         if (self.arr.length === 0 && v.isNumber) {
@@ -207,7 +204,7 @@ var calculator = function(val) {
     };
 };
 
-var calculatoritem = function(value){
+var calculator_item = function(value){
     var self = this;
     self.val = value;
     Object.defineProperty(self , 'isNumber',{
@@ -229,7 +226,7 @@ var calculatoritem = function(value){
 var number = function(value){
     var hasdecimal = false;
     var self = this;
-    calculatoritem.call(self, parseFloat(value));
+    calculator_item.call(self, parseFloat(value));
 };
 var calculation = function (num1, op, num2) {
     var self = this;
@@ -239,7 +236,7 @@ var calculation = function (num1, op, num2) {
     var result = function(){
         return op.calculate(parseFloat(num1.val),parseFloat(num2.val))
     };
-    calculatoritem.call(this,result());
+    calculator_item.call(this,result());
 };
 
 var operator = function(value){
@@ -260,7 +257,7 @@ var operator = function(value){
             break;
     }
     self.priority = priority;
-    calculatoritem.call(self, value);
+    calculator_item.call(self, value);
     self.calculate = function(num1,num2){
         var result;
         switch(value){
