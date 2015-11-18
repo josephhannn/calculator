@@ -174,17 +174,34 @@ var calculator = function(val) {
             self.equate();
         }
         if (self.arr.length > 3 && lastitem.isNumber){
+            var oop_check;
             while(self.arr.length > 1) {
-                for (var o = 0; o < self.arr.length; o++) {
-                    if (self.arr[o].isOperator && self.arr[o].priority) {
-                        var calcu2 = new calculation(self.arr[o - 1], self.arr[o], self.arr[o + 1]);
-                        self.arr[o - 1] = calcu2;
-                        self.arr.splice(o, 2);
-                        self.history.push(calcu2);
+                for(var o = 0 ; o<self.arr.length;o++){
+                    if(self.arr[o].isOperator && self.arr[o].priority){
+                        oop_check = true;
+                        if(oop_check) {
+                            for (var k = 0; k < self.arr.length; k++) {
+                                if (self.arr[k].isOperator && self.arr[k].priority) {
+                                    var calcu3 = new calculation(self.arr[k - 1], self.arr[k], self.arr[k + 1]);
+                                    self.arr[k - 1] = calcu3;
+                                    self.arr.splice(k, 2);
+                                    self.history.push(calcu3);
+                                }
+                                else {
+                                    continue;
+                                }
+                            }
+                        }
                     }
-                    else{continue;}
                 }
-                self.equate();
+                for (var l = 0; l < self.arr.length; l++) {
+                    if (self.arr[l].isOperator) {
+                        var calcu4 = new calculation(self.arr[l - 1], self.arr[l], self.arr[l + 1]);
+                        self.arr[l - 1] = calcu4;
+                        self.arr.splice(l, 2);
+                        self.history.push(calcu4);
+                    }
+                }
             }
         }
     };
