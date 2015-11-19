@@ -57,12 +57,17 @@ var calculator = function(val) {
     };
     self.decimal = function(val){
         var last_item = self.arr[self.arr.length-1];
+        var new_decimal = new number('0');
         if(self.arr.length === 0){
-            var new_decimal = new number('0');
             new_decimal.val = '0.';
             new_decimal.decimal = true;
             self.arr=[new_decimal];
             return;
+        }
+        if(last_item.isOperator){
+            new_decimal.val = '0.';
+            new_decimal.decimal = true;
+            self.arr.push(new_decimal);
         }
         if(last_item.isNumber && !last_item.decimal){
             last_item.val = last_item.val + "" + val;
