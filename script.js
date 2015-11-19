@@ -80,7 +80,7 @@ var calculator = function() {
         $('.history li').remove();
         for(var i = 0 ; i<self.history.length;i++){
             var entry = $('<li>').text(
-                self.history[i].num1.val+''+self.history[i].operator.val+''+self.history[i].num2.val+'='+self.history[i].val);
+                self.history[i].num1.val+' '+self.history[i].operator.val+' '+self.history[i].num2.val+' = '+self.history[i].val);
             $('.history').append(entry)
         }
     };
@@ -111,7 +111,7 @@ var calculator = function() {
             return;
         }
         if (last_entry.isNumber) {
-            if(last_entry.val === 0){
+            if(last_entry.val === 0 && v.isNumber){
                 self.arr[self.arr.length-1] = v;
                 return;
             }
@@ -158,7 +158,7 @@ var calculator = function() {
         }
         if(self.arr.length == 3){
             var new_calculation = new calculation(self.arr[0],self.arr[1],self.arr[2]);
-            if (new_calculation.val === Infinity){
+            if (new_calculation.val === Infinity || isNaN(new_calculation.val)){
                 new_calculation.val = 'Error'
             }
             self.arr = [new_calculation];
