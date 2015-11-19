@@ -166,8 +166,8 @@ var calculator = function() {
         }
         if (self.arr.length > 3 && last_item.isOperator){
             while(self.arr.length > 2) {
-                for(var i = 0 ; i<self.arr.length;i++){
-                    //scan array check for priority operators AKA x or /
+                for(var i = 0 ; i<self.arr.length-1;i++){
+                    //scan array check for priority operators AKA x or / except last value
                     if(self.arr[i].isOperator && self.arr[i].priority){
                         //when true calculate that operation first
                         for (var j = 0; j < self.arr.length; j++) {
