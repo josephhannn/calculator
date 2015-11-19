@@ -159,7 +159,9 @@ var calculator = function() {
         if(self.arr.length == 3){
             var new_calculation = new calculation(self.arr[0],self.arr[1],self.arr[2]);
             if (new_calculation.val === Infinity || isNaN(new_calculation.val)){
-                new_calculation.val = 'Error'
+                self.arr = [];
+                self.display_area.text('Error');
+                return;
             }
             self.arr = [new_calculation];
             self.history.push(new_calculation);
