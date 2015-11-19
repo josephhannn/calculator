@@ -27,7 +27,7 @@ $('document').ready(function(){
 });
 
 
-var calculator = function(val) {
+var calculator = function() {
     var self = this;
     var calculator_array = [];
     var calc_history = [];
@@ -166,15 +166,34 @@ var calculator = function(val) {
         }
         if (self.arr.length > 3 && last_item.isOperator){
             while(self.arr.length > 2) {
-                for (var i = 0; i < self.arr.length; i++) {
-                    if (self.arr[i].isOperator && self.arr[i+1].isNumber) {
-                        new_calculation = new calculation(self.arr[i - 1], self.arr[i], self.arr[i + 1]);
-                        self.arr[i - 1] = new_calculation;
-                        self.arr.splice(i, 2);
+                for(var i = 0 ; i<self.arr.length;i++){
+                    //scan array check for priority operators AKA x or /
+                    if(self.arr[i].isOperator && self.arr[i].priority){
+                        //when true calculate that operation first
+                        for (var j = 0; j < self.arr.length; j++) {
+                            if (self.arr[j].isOperator && self.arr[j].priority) {
+                                new_calculation = new calculation(self.arr[j - 1], self.arr[j], self.arr[j + 1]);
+                                self.arr[j - 1] = new_calculation;
+                                self.arr.splice(j, 2);
+                                self.history.push(new_calculation);
+                            }
+                            else {
+                                continue;
+                            }
+                        }
+                    }
+                }
+                //when there are no priority operators in array continue as normal and ignore last operator
+                for (var m = 0; m < self.arr.length-1; m++) {
+                    if (self.arr[m].isOperator) {
+                        new_calculation = new calculation(self.arr[m - 1], self.arr[m], self.arr[m + 1]);
+                        self.arr[m - 1] = new_calculation;
+                        self.arr.splice(m, 2);
                         self.history.push(new_calculation);
                     }
                 }
             }
+            //until here where we run the equate function again to equate the remaining 2 items in array number and operator
             self.equate();
         }
         if (self.arr.length > 3 && last_item.isNumber){
