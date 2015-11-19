@@ -31,6 +31,8 @@ var calculator = function(val) {
     var self = this;
     var calculator_array = [];
     var calc_history = [];
+    var display_area = $('.display h4');
+    self.display_area = display_area;
     self.arr = calculator_array;
     self.history = calc_history;
 
@@ -49,11 +51,11 @@ var calculator = function(val) {
         for(var i=0;i<self.arr.length;i++){
             var display = self.arr[i].val
         }
-        $('.display h4').text(display);
+        self.display_area.text(display);
     };
     self.allclear = function(){
         self.arr = [];
-        $('.display h4').text('0');
+        self.display_area.text('0');
     };
     self.decimal = function(val){
         var last_item = self.arr[self.arr.length-1];
@@ -176,7 +178,6 @@ var calculator = function(val) {
             self.equate();
         }
         if (self.arr.length > 3 && last_item.isNumber){
-            var oop_check;
             while(self.arr.length > 1) {
                 for(var o = 0 ; o<self.arr.length;o++){
                     //scan array check for priority operators AKA x or /
