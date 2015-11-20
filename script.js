@@ -21,8 +21,11 @@ $('document').ready(function(){
     $('.AC').on('click',function(){
         calc.allclear();
     });
-    $('.showhistory').on('click',function(){
+    $('.show_history').on('click',function(){
         calc.history_display();
+    });
+    $('.clear_history').on('click', function(){
+        calc.clear_history();
     })
 });
 
@@ -79,10 +82,14 @@ var calculator = function() {
     self.history_display = function(){
         $('.history li').remove();
         for(var i = 0 ; i<self.history.length;i++){
-            var entry = $('<li>').text(
+            var entry = $('<div>').text(
                 self.history[i].num1.val+' '+self.history[i].operator.val+' '+self.history[i].num2.val+' = '+self.history[i].val);
-            $('.history').append(entry)
+            $('.history_box').append(entry)
         }
+    };
+    self.clear_history = function(){
+        self.history = [];
+        self.history_display();
     };
     self.add_inputs = function (val) {
         var v = null;

@@ -37,4 +37,8 @@
 }
 .historycontainer {
     position: relative;
-}
+    bottom: 40vh;
+}.history_box{
+    overflow: scroll;
+    height: 30vh;
+ }
