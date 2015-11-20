@@ -198,23 +198,21 @@ var calculator = function() {
             //until here where we run the equate function again to equate the remaining 2 items in array number and operator
             self.equate();
         }
-        if (self.arr.length > 3 && last_item.isNumber){
-            while(self.arr.length > 1) {
-                for(var o = 0 ; o<self.arr.length;o++){
+        if (self.arr.length > 3 && last_item.isNumber) {
+            while (self.arr.length > 1) {
+                for (var o = 0; o < self.arr.length; o++) {
                     //scan array check for priority operators AKA x or /
-                    if(self.arr[o].isOperator && self.arr[o].priority){
+                    if (self.arr[o].isOperator && self.arr[o].priority) {
                         //when true calculate that operation first
-                        for (var k = 0; k < self.arr.length; k++) {
-                            if (self.arr[k].isOperator && self.arr[k].priority) {
-                                    new_calculation = new calculation(self.arr[k - 1], self.arr[k], self.arr[k + 1]);
-                                    self.arr[k - 1] = new_calculation;
-                                    self.arr.splice(k, 2);
-                                    self.history.push(new_calculation);
-                            }
-                            else {
-                                    continue;
-                            }
-                            }
+                        new_calculation = new calculation(self.arr[o - 1], self.arr[o], self.arr[o + 1]);
+                        self.arr[o - 1] = new_calculation;
+                        self.arr.splice(o, 2);
+                        self.history.push(new_calculation);
+                        //to make sure the array doesnt skip the next input after splicing
+                        o--
+                    }
+                    else {
+                        continue;
                     }
                 }
                 //when there are no priority operators in array continue as normal
