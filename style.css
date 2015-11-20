@@ -41,4 +41,6 @@
 }.history_box{
     overflow: scroll;
     height: 30vh;
+    width: 20vw;
+    background-color: lightgrey;
  }

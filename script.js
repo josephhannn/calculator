@@ -65,22 +65,22 @@ var calculator = function() {
         var new_decimal = new number('0');
         if(self.arr.length === 0){
             new_decimal.val = '0.';
-            new_decimal.decimal = true;
+            new_decimal.hasdecimal = true;
             self.arr=[new_decimal];
             return;
         }
         if(last_item.isOperator){
             new_decimal.val = '0.';
-            new_decimal.decimal = true;
+            new_decimal.hasdecimal = true;
             self.arr.push(new_decimal);
         }
-        if(last_item.isNumber && !last_item.decimal){
+        if(last_item.isNumber && !last_item.hasdecimal){
             last_item.val = last_item.val + "" + val;
-            last_item.decimal = true;
+            last_item.hasdecimal = true;
         }
     };
     self.history_display = function(){
-        $('.history li').remove();
+        $('.history_box div').remove();
         for(var i = 0 ; i<self.history.length;i++){
             var entry = $('<div>').text(
                 self.history[i].num1.val+' '+self.history[i].operator.val+' '+self.history[i].num2.val+' = '+self.history[i].val);
@@ -256,6 +256,7 @@ var calculator_item = function(value){
 var number = function(value){
     var hasdecimal = false;
     var self = this;
+    self.hasdecimal = hasdecimal;
     calculator_item.call(self, parseFloat(value));
 };
 var calculation = function (num1, op, num2) {
